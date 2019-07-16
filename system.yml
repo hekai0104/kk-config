@@ -1,0 +1,503 @@
+spring:
+  profiles:
+    active:
+      - dev
+---
+server:
+  port: 3001 #注册中心占用3001端口
+spring:
+  profiles: kk-item01 #开发环境
+  application:
+    name: kk-item
+  datasource:
+    system: 
+      url: jdbc:log4jdbc:mysql://192.168.195.100:3306/kk01?characterEncoding=UTF-8&useSSL=false           # 数据库名称
+      username: root
+      password: hkroot
+      driver-class-name: net.sf.log4jdbc.DriverSpy             # mysql驱动包com.mysql.jdbc.Driver
+      #初始化连接池的连接数量 大小，最小，最大
+      initialSize: 5
+      minIdle: 5
+      maxActive: 20
+      #配置获取连接等待超时的时间
+      maxWait: 60000
+      #配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
+      timeBetweenEvictionRunsMillis: 60000
+      #配置一个连接在池中最小生存的时间，单位是毫秒
+      minEvictableIdleTimeMillis: 300000
+      validationQuery: SELECT 1 FROM DUAL
+      testWhileIdle: true
+      testOnBorrow: false
+      testOnReturn: false
+      #是否缓存preparedStatement，也就是PSCache  官方建议MySQL下建议关闭   个人建议如果想用SQL防火墙 建议打开
+      poolPreparedStatements: true
+      maxPoolPreparedStatementPerConnectionSize: 20
+      #配置监控统计拦截的filters，去掉后监控界面sql无法统计，'wall'用于防火墙
+      filters: stat,wall,log4j
+      #通过connectProperties属性来打开mergeSql功能；慢SQL记录
+      connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
+      #请勿配置timeBetweenLogStatsMillis 会定时输出日志 并导致统计的sql清零
+      #timeBetweenLogStatsMillis=20000
+    workflow:
+      url: jdbc:log4jdbc:mysql://192.168.195.100:3306/activiti?characterEncoding=UTF-8&useSSL=false           # 数据库名称
+      username: root
+      password: hkroot
+      driver-class-name: net.sf.log4jdbc.DriverSpy             # mysql驱动包com.mysql.jdbc.Driver
+      #初始化连接池的连接数量 大小，最小，最大
+      initialSize: 5
+      minIdle: 5
+      maxActive: 20
+      #配置获取连接等待超时的时间
+      maxWait: 60000
+      #配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
+      timeBetweenEvictionRunsMillis: 60000
+      #配置一个连接在池中最小生存的时间，单位是毫秒
+      minEvictableIdleTimeMillis: 300000
+      validationQuery: SELECT 1 FROM DUAL
+      testWhileIdle: true
+      testOnBorrow: false
+      testOnReturn: false
+      #是否缓存preparedStatement，也就是PSCache  官方建议MySQL下建议关闭   个人建议如果想用SQL防火墙 建议打开
+      poolPreparedStatements: true
+      maxPoolPreparedStatementPerConnectionSize: 20
+      #配置监控统计拦截的filters，去掉后监控界面sql无法统计，'wall'用于防火墙
+      filters: stat,wall,log4j
+      #通过connectProperties属性来打开mergeSql功能；慢SQL记录
+      connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
+      #请勿配置timeBetweenLogStatsMillis 会定时输出日志 并导致统计的sql清零
+      #timeBetweenLogStatsMillis=20000
+#关闭验证自动部署，不关闭每次启动都会去部署resources/processes文件夹下面的所有资源文件
+  activiti:
+    check-process-definitions: false #检查流程文件
+  druid:
+    druidUrl: /druid/*
+    allow: #白名单
+    deny: #黑名单
+    loginUsername:  #登录名
+    loginPassword:  #登录密码
+    resetEnable: true #是否有权利重置数据
+  session:
+    store-type: redis
+  redis:
+    cluster:
+      nodes: 192.168.195.100:7001,192.168.195.100:7002,192.168.195.100:7003,192.168.195.100:7004,192.168.195.100:7005,192.168.195.100:7006
+      timeout: 2000
+      max-redirects: 7
+  rabbitmq:
+    addresses: 192.168.195.100
+    #port: 5672
+    #virtual-host: /
+    username: guest
+    password: guest
+  elasticsearch:
+    jest:
+      uris: http://192.168.195.100:9200
+  data:
+    elasticsearch:
+      cluster-name: elasticsearch
+      cluster-nodes: 192.168.195.100:9300
+  mail:
+    username: 1336763640@qq.com
+    password: pkhhkbtqhaxnjfch
+    host: smtp.qq.com
+    properties:
+      mail:
+        smtp:
+          ssl:
+            enable: true
+            
+fdfs: # 分布式文件系统fastdfs配置
+  soTimeout: 1500 # socket连接超时时长
+  connectTimeout: 600 # 连接tracker服务器超时时长
+  pool:
+    max-total: 153 # 从池中借出的对象的最大数目
+    max-wait-millis: 102 # 获取连接时的最大等待毫秒数100
+  thumbImage: # 缩略图生成参数，可选
+    width: 150
+    height: 150
+  trackerList: # 跟踪服务器tracker_server请求地址,支持多个，这里只有一个，如果有多个在下方加- x.x.x.x:port
+    - 192.168.195.100:22122
+  web-server-url: http://192.168.195.100/ # 存储服务器storage_server访问地址
+  spring:
+    http:
+      multipart:
+        max-file-size: 100MB # 最大支持文件大小
+        max-request-size: 100MB # 最大支持请求大小
+        
+security:
+  url: /login_p,/druid/**,/guest/**,/workflow/**
+web:
+  url: /login_p,/druid/**,/swagger-resources/**,/guest/**,/error,/workflow/**
+  
+management:
+  security:
+    enabled: false
+  context-path: /manage
+
+endpoints:
+  enabled: false  #关闭所有端点
+  health:
+    enabled:  true #只开启health
+
+eureka:
+  client: #客户端注册进eureka服务列表内
+    service-url: 
+      defaultZone: http://admin:admin@eureka2001.com:2001/eureka/,http://admin:admin@eureka2002.com:2002/eureka/,http://admin:admin@eureka2003.com:2003/eureka/
+  instance:
+    instance-id: kk-item01
+    prefer-ip-address: true     #访问路径可以显示IP地址     
+
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 3000
+
+info: 
+  app.name: kk01
+  company.name: kk
+  build.artifactId: $project.artifactId$
+  build.version: $project.version$
+
+
+
+
+
+---
+
+
+
+
+
+
+server:
+  port: 3002 #注册中心占用3002端口
+spring:
+  profiles: kk-item02 #开发环境
+  application:
+    name: kk-item
+  datasource:
+    system: 
+      url: jdbc:log4jdbc:mysql://192.168.195.100:3306/kk01?characterEncoding=UTF-8&useSSL=false           # 数据库名称
+      username: root
+      password: hkroot
+      driver-class-name: net.sf.log4jdbc.DriverSpy             # mysql驱动包com.mysql.jdbc.Driver
+      #初始化连接池的连接数量 大小，最小，最大
+      initialSize: 5
+      minIdle: 5
+      maxActive: 20
+      #配置获取连接等待超时的时间
+      maxWait: 60000
+      #配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
+      timeBetweenEvictionRunsMillis: 60000
+      #配置一个连接在池中最小生存的时间，单位是毫秒
+      minEvictableIdleTimeMillis: 300000
+      validationQuery: SELECT 1 FROM DUAL
+      testWhileIdle: true
+      testOnBorrow: false
+      testOnReturn: false
+      #是否缓存preparedStatement，也就是PSCache  官方建议MySQL下建议关闭   个人建议如果想用SQL防火墙 建议打开
+      poolPreparedStatements: true
+      maxPoolPreparedStatementPerConnectionSize: 20
+      #配置监控统计拦截的filters，去掉后监控界面sql无法统计，'wall'用于防火墙
+      filters: stat,wall,log4j
+      #通过connectProperties属性来打开mergeSql功能；慢SQL记录
+      connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
+      #请勿配置timeBetweenLogStatsMillis 会定时输出日志 并导致统计的sql清零
+      #timeBetweenLogStatsMillis=20000
+    workflow:
+      url: jdbc:log4jdbc:mysql://192.168.195.100:3306/activiti?characterEncoding=UTF-8&useSSL=false           # 数据库名称
+      username: root
+      password: hkroot
+      driver-class-name: net.sf.log4jdbc.DriverSpy             # mysql驱动包com.mysql.jdbc.Driver
+      #初始化连接池的连接数量 大小，最小，最大
+      initialSize: 5
+      minIdle: 5
+      maxActive: 20
+      #配置获取连接等待超时的时间
+      maxWait: 60000
+      #配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
+      timeBetweenEvictionRunsMillis: 60000
+      #配置一个连接在池中最小生存的时间，单位是毫秒
+      minEvictableIdleTimeMillis: 300000
+      validationQuery: SELECT 1 FROM DUAL
+      testWhileIdle: true
+      testOnBorrow: false
+      testOnReturn: false
+      #是否缓存preparedStatement，也就是PSCache  官方建议MySQL下建议关闭   个人建议如果想用SQL防火墙 建议打开
+      poolPreparedStatements: true
+      maxPoolPreparedStatementPerConnectionSize: 20
+      #配置监控统计拦截的filters，去掉后监控界面sql无法统计，'wall'用于防火墙
+      filters: stat,wall,log4j
+      #通过connectProperties属性来打开mergeSql功能；慢SQL记录
+      connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
+      #请勿配置timeBetweenLogStatsMillis 会定时输出日志 并导致统计的sql清零
+      #timeBetweenLogStatsMillis=20000
+  activiti:
+    check-process-definitions: false #检查流程文件
+  druid:
+    druidUrl: /druid/*
+    allow: #白名单
+    deny: #黑名单
+    loginUsername:  #登录名
+    loginPassword:  #登录密码
+    resetEnable: true #是否有权利重置数据
+  session:
+    store-type: redis
+  redis:
+    cluster:
+      nodes: 192.168.195.100:7001,192.168.195.100:7002,192.168.195.100:7003,192.168.195.100:7004,192.168.195.100:7005,192.168.195.100:7006
+      timeout: 2000
+      max-redirects: 7
+  rabbitmq:
+    addresses: 192.168.195.100
+    #port: 5672
+    #virtual-host: /
+    username: guest
+    password: guest
+  elasticsearch:
+    jest:
+      uris: http://192.168.195.100:9200
+  data:
+    elasticsearch:
+      cluster-name: elasticsearch
+      cluster-nodes: 192.168.195.100:9300
+  mail:
+    username: 1336763640@qq.com
+    password: pkhhkbtqhaxnjfch
+    host: smtp.qq.com
+    properties:
+      mail:
+        smtp:
+          ssl:
+            enable: true
+            
+fdfs: # 分布式文件系统fastdfs配置
+  soTimeout: 1500 # socket连接超时时长
+  connectTimeout: 600 # 连接tracker服务器超时时长
+  pool:
+    max-total: 153 # 从池中借出的对象的最大数目
+    max-wait-millis: 102 # 获取连接时的最大等待毫秒数100
+  thumbImage: # 缩略图生成参数，可选
+    width: 150
+    height: 150
+  trackerList: # 跟踪服务器tracker_server请求地址,支持多个，这里只有一个，如果有多个在下方加- x.x.x.x:port
+    - 192.168.195.100:22122
+  web-server-url: http://192.168.195.100/ # 存储服务器storage_server访问地址
+  spring:
+    http:
+      multipart:
+        max-file-size: 100MB # 最大支持文件大小
+        max-request-size: 100MB # 最大支持请求大小
+        
+security:
+  url: /login_p,/druid/**,/guest/**
+web:
+  url: /login_p,/druid/**,/swagger-resources/**,/guest/**,/error
+  
+
+management:
+  security:
+    enabled: false
+  context-path: /manage
+
+endpoints:
+  enabled: false  #关闭所有端点
+  health:
+    enabled:  true #只开启health
+
+eureka:
+  client: #客户端注册进eureka服务列表内
+    service-url: 
+      defaultZone: http://admin:admin@eureka2001.com:2001/eureka/,http://admin:admin@eureka2002.com:2002/eureka/,http://admin:admin@eureka2003.com:2003/eureka/
+  instance:
+    instance-id: kk-item02
+    prefer-ip-address: true     #访问路径可以显示IP地址     
+
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 3000
+
+info: 
+  app.name: kk02
+  company.name: kk
+  build.artifactId: $project.artifactId$
+  build.version: $project.version$
+  
+  
+  
+  
+  
+  
+  
+  
+---
+
+
+
+
+
+
+server:
+  port: 3003 #注册中心占用3003端口
+spring:
+  profiles: kk-item03 #开发环境
+  application:
+    name: kk-item
+  datasource:
+    system: 
+      url: jdbc:log4jdbc:mysql://192.168.195.100:3306/kk01?characterEncoding=UTF-8&useSSL=false           # 数据库名称
+      username: root
+      password: hkroot
+      driver-class-name: net.sf.log4jdbc.DriverSpy             # mysql驱动包com.mysql.jdbc.Driver
+      #初始化连接池的连接数量 大小，最小，最大
+      initialSize: 5
+      minIdle: 5
+      maxActive: 20
+      #配置获取连接等待超时的时间
+      maxWait: 60000
+      #配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
+      timeBetweenEvictionRunsMillis: 60000
+      #配置一个连接在池中最小生存的时间，单位是毫秒
+      minEvictableIdleTimeMillis: 300000
+      validationQuery: SELECT 1 FROM DUAL
+      testWhileIdle: true
+      testOnBorrow: false
+      testOnReturn: false
+      #是否缓存preparedStatement，也就是PSCache  官方建议MySQL下建议关闭   个人建议如果想用SQL防火墙 建议打开
+      poolPreparedStatements: true
+      maxPoolPreparedStatementPerConnectionSize: 20
+      #配置监控统计拦截的filters，去掉后监控界面sql无法统计，'wall'用于防火墙
+      filters: stat,wall,log4j
+      #通过connectProperties属性来打开mergeSql功能；慢SQL记录
+      connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
+      #请勿配置timeBetweenLogStatsMillis 会定时输出日志 并导致统计的sql清零
+      #timeBetweenLogStatsMillis=20000
+    workflow:
+      url: jdbc:log4jdbc:mysql://192.168.195.100:3306/activiti?characterEncoding=UTF-8&useSSL=false           # 数据库名称
+      username: root
+      password: hkroot
+      driver-class-name: net.sf.log4jdbc.DriverSpy             # mysql驱动包com.mysql.jdbc.Driver
+      #初始化连接池的连接数量 大小，最小，最大
+      initialSize: 5
+      minIdle: 5
+      maxActive: 20
+      #配置获取连接等待超时的时间
+      maxWait: 60000
+      #配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
+      timeBetweenEvictionRunsMillis: 60000
+      #配置一个连接在池中最小生存的时间，单位是毫秒
+      minEvictableIdleTimeMillis: 300000
+      validationQuery: SELECT 1 FROM DUAL
+      testWhileIdle: true
+      testOnBorrow: false
+      testOnReturn: false
+      #是否缓存preparedStatement，也就是PSCache  官方建议MySQL下建议关闭   个人建议如果想用SQL防火墙 建议打开
+      poolPreparedStatements: true
+      maxPoolPreparedStatementPerConnectionSize: 20
+      #配置监控统计拦截的filters，去掉后监控界面sql无法统计，'wall'用于防火墙
+      filters: stat,wall,log4j
+      #通过connectProperties属性来打开mergeSql功能；慢SQL记录
+      connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
+      #请勿配置timeBetweenLogStatsMillis 会定时输出日志 并导致统计的sql清零
+      #timeBetweenLogStatsMillis=20000
+  activiti:
+    check-process-definitions: false #检查流程文件
+  druid:
+    druidUrl: /druid/*
+    allow: #白名单
+    deny: #黑名单
+    loginUsername:  #登录名
+    loginPassword:  #登录密码
+    resetEnable: true #是否有权利重置数据
+  session:
+    store-type: redis
+  redis:
+    cluster:
+      nodes: 192.168.195.100:7001,192.168.195.100:7002,192.168.195.100:7003,192.168.195.100:7004,192.168.195.100:7005,192.168.195.100:7006
+      timeout: 2000
+      max-redirects: 7
+  rabbitmq:
+    addresses: 192.168.195.100
+    #port: 5672
+    #virtual-host: /
+    username: guest
+    password: guest
+  elasticsearch:
+    jest:
+      uris: http://192.168.195.100:9200
+  data:
+    elasticsearch:
+      cluster-name: elasticsearch
+      cluster-nodes: 192.168.195.100:9300
+  mail:
+    username: 1336763640@qq.com
+    password: pkhhkbtqhaxnjfch
+    host: smtp.qq.com
+    properties:
+      mail:
+        smtp:
+          ssl:
+            enable: true
+            
+fdfs: # 分布式文件系统fastdfs配置
+  soTimeout: 1500 # socket连接超时时长
+  connectTimeout: 600 # 连接tracker服务器超时时长
+  pool:
+    max-total: 153 # 从池中借出的对象的最大数目
+    max-wait-millis: 102 # 获取连接时的最大等待毫秒数100
+  thumbImage: # 缩略图生成参数，可选
+    width: 150
+    height: 150
+  trackerList: # 跟踪服务器tracker_server请求地址,支持多个，这里只有一个，如果有多个在下方加- x.x.x.x:port
+    - 192.168.195.100:22122
+  web-server-url: http://192.168.195.100/ # 存储服务器storage_server访问地址
+  spring:
+    http:
+      multipart:
+        max-file-size: 100MB # 最大支持文件大小
+        max-request-size: 100MB # 最大支持请求大小
+        
+security:
+  url: /login_p,/druid/**,/guest/**
+web:
+  url: /login_p,/druid/**,/swagger-resources/**,/guest/**,/error
+  
+
+management:
+  security:
+    enabled: false
+  context-path: /manage
+
+endpoints:
+  enabled: false  #关闭所有端点
+  health:
+    enabled:  true #只开启health
+
+eureka:
+  client: #客户端注册进eureka服务列表内
+    service-url: 
+      defaultZone: http://admin:admin@eureka2001.com:2001/eureka/,http://admin:admin@eureka2002.com:2002/eureka/,http://admin:admin@eureka2003.com:2003/eureka/
+  instance:
+    instance-id: kk-item03
+    prefer-ip-address: true     #访问路径可以显示IP地址     
+
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 3000
+
+info: 
+  app.name: kk03
+  company.name: kk
+  build.artifactId: $project.artifactId$
+  build.version: $project.version$

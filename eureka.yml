@@ -1,0 +1,67 @@
+spring:
+  profiles:
+    active:
+      - dev
+---
+server:
+  port: 2001 #注册中心占用2001端口
+spring:
+  profiles: eureka2001
+  application:
+    name: eureka
+security:
+  basic:
+    enabled: true
+  user:
+    name: admin
+    password: admin
+eureka:
+  instance:
+    hostname: eureka2001.com #eureka服务端的实例名称
+  client:
+    register-with-eureka: false     #false表示不向注册中心注册自己。
+    fetch-registry: false     #false表示自己端就是注册中心，我的职责就是维护服务实例，并不需要去检索服务
+    service-url: 
+       defaultZone: http://admin:admin@eureka2002.com:2002/,http://admin:admin@eureka2003.com:2003/
+---
+server:
+  port: 2002 #注册中心占用2002端口
+spring:
+  profiles: eureka2002
+  application:
+    name: eureka
+security:
+  basic:
+    enabled: true
+  user:
+    name: admin
+    password: admin
+eureka:
+  instance:
+    hostname: eureka2002.com #eureka服务端的实例名称
+  client:
+    register-with-eureka: false     #false表示不向注册中心注册自己。
+    fetch-registry: false     #false表示自己端就是注册中心，我的职责就是维护服务实例，并不需要去检索服务
+    service-url:
+       defaultZone: http://admin:admin@eureka2001.com:2001/,http://admin:admin@eureka2003.com:2003/
+---
+server:
+  port: 2003 #注册中心占用2003端口
+spring:
+  profiles: eureka2003
+  application:
+    name: eureka
+security:
+  basic:
+    enabled: true
+  user:
+    name: admin
+    password: admin
+eureka:
+  instance:
+    hostname: eureka2003.com #eureka服务端的实例名称
+  client:
+    register-with-eureka: false     #false表示不向注册中心注册自己。
+    fetch-registry: false     #false表示自己端就是注册中心，我的职责就是维护服务实例，并不需要去检索服务
+    service-url:
+       defaultZone: http://admin:admin@eureka2001.com:2001/,http://admin:admin@eureka2002.com:2002/
